@@ -1,0 +1,39 @@
+######Data parsing and RG extraction scripts######################
+python ~/scripts/MogheProjects/2_ResinGlyc/parse_MSDIAL_wrapper_mgf_v2.py 0_makeRgFrags/frags.list.mz162.pairs only14cent.txt mz162 n
+#Repeat for mz132,mz146
+
+python ~/scripts/MogheProjects/2_ResinGlyc/parse_MSDIAL_step6_removeRedundantScans.py mz132,mz146,mz162 only14cent.txt
+python ~/scripts/MogheProjects/2_ResinGlyc/gnps_peakArea.py only14cent.txt
+python ~/scripts/MogheProjects/2_ResinGlyc/peak_correlations.py mz132,mz146,mz162 only14cent.txt
+
+
+#######Prediction scripts###############
+#These script names are after removing old scripts and renaming everything
+
+python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step1.py mz132,mz146,mz162 filelist.tab 4_predictMotifs/motifs.grp.mod.noComb 20
+python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step2.py filelist.tab.nid1 4_predictMotifs/motifs.grp.mod.noComb
+python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step3_fragCounts.py filelist.tab.nid1.id2
+
+gdm67@cbsugaurav /local/storage/gaurav/projects/1_Conv/4_MSanalysis/4_centroided_redo
+$ python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step4_pred.py 4_predictMotifs/motifs.grp.mod.frequent filelist.tab.nid1.id2 5 3
+INP1:  4_predictMotifs/motifs.grp.mod.frequent
+INP2: Output of step 2 (filelist.tab.nid1.id2) NOT the tab file
+INP3: How many sugars do you want to consider? (1-7)
+INP4: How many acyl chains do you want to consider? (0-5)
+Pred:  1589
+Nopred:  864
+Done!
+
+python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step5_assessMatches.py filelist.tab.nid1.id2
+
+python ~/scripts/MogheProjects/2_ResinGlyc/resinGlycoside_id_step6_acyls.py filelist.tab filelist.tab.nid1.id2.pred3
+
+######OTHER SCRIPTS#############
+python ~/scripts/MogheProjects/2_ResinGlyc/msms_frag_speciesDiversity.py filelist.tab 2_MGF/ ms1
+
+python ~/scripts/MogheProjects/2_ResinGlyc/peak_correlations.py  mz132,mz146,mz162 filelist.tab
+
+python ~/scripts/MogheProjects/2_ResinGlyc/gnps_peakArea.py filelist.tab
+
+
+
